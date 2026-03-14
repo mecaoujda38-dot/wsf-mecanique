@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSF-Mécanique — Carnet d'entretien</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0e0e10;--s1:#16161a;--s2:#1c1c22;--bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.14);--t:#f0f0f0;--m:#888;--a:#e8c547;--a2:#c9a82e;--r:#e05252;--g:#4caf7d;--b:#5b9cf6;--fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
+  body{background:var(--bg);color:var(--t);font-family:var(--fb);min-height:100vh}
+  .sc{display:none}.sc.active{display:flex;flex-direction:column;min-height:100vh}
+  #ls{align-items:center;justify-content:center;padding:2rem;background:var(--bg)}
+  .lb{width:100%;max-width:420px;background:var(--s1);border:0.5px solid var(--bd2);border-radius:16px;padding:2.5rem 2rem}
+  .lh{display:flex;align-items:center;gap:14px;margin-bottom:1.8rem}
+  .logo-wsf{width:56px;height:56px;border-radius:11px;background:#111;display:flex;align-items:center;justify-content:center;border:0.5px solid #4a3800;flex-shrink:0}
+  .lh-t h1{font-family:var(--fh);font-size:20px;color:var(--a);letter-spacing:-0.3px}
+  .lh-t p{font-size:10px;color:var(--m);margin-top:3px;letter-spacing:0.4px}
+  .rt{display:flex;gap:5px;background:var(--s2);border-radius:9px;padding:4px;margin-bottom:1.4rem}
+  .rt button{flex:1;padding:8px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--m);cursor:pointer;border-radius:7px;transition:all .2s;font-family:var(--fb)}
+  .rt button.on{background:var(--a);color:#000}
+  .fi{margin-bottom:.9rem}.fi label{display:block;font-size:11px;color:var(--m);margin-bottom:5px}
+  .fi input{width:100%;padding:10px 13px;background:var(--s2);border:0.5px solid var(--bd);border-radius:9px;color:var(--t);font-size:14px;font-family:var(--fb);outline:none;transition:border .2s}
+  .fi input:focus{border-color:var(--a)}
+  .hint{font-size:11px;color:var(--m);margin-bottom:1.2rem;line-height:1.6}.hint b{color:var(--a);font-weight:400}
+  .bp{width:100%;padding:12px;background:var(--a);color:#000;border:none;border-radius:9px;font-size:14px;font-weight:500;font-family:var(--fh);cursor:pointer;transition:background .2s}
+  .bp:hover{background:var(--a2)}.err{font-size:11px;color:var(--r);margin-top:8px;text-align:center;min-height:14px}
+  .tb{background:var(--s1);border-bottom:0.5px solid var(--bd);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .tbl{display:flex;align-items:center;gap:12px}
+  .tl-logo{width:36px;height:36px;border-radius:7px;background:#111;display:flex;align-items:center;justify-content:center;border:0.5px solid #4a3800}
+  .tb-brand{font-family:var(--fh);font-size:15px;color:var(--a)}
+  .badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px}
+  .ba{background:#2a1f00;color:var(--a);border:0.5px solid #4a3800}
+  .bc{background:#0f2a1a;color:var(--g);border:0.5px solid #1a4a2a}
+  .bbl{background:#0f1e2a;color:var(--b);border:0.5px solid #1a3a4a}
+  .tbr{display:flex;align-items:center;gap:10px}
+  .blg{padding:7px 14px;background:transparent;border:0.5px solid var(--bd2);border-radius:8px;color:var(--m);font-size:12px;cursor:pointer;font-family:var(--fb);transition:all .2s}
+  .blg:hover{border-color:var(--r);color:var(--r)}
+  .mc{flex:1;padding:1.5rem;overflow-y:auto;max-width:1100px;width:100%;align-self:center}
+  .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+  .sh h2{font-family:var(--fh);font-size:18px;letter-spacing:-.3px}
+  .sh p{font-size:11px;color:var(--m);margin-top:2px}
+  .ba2{padding:9px 18px;background:var(--a);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--fh);transition:background .2s;white-space:nowrap}
+  .ba2:hover{background:var(--a2)}.bs{padding:6px 12px;font-size:12px}
+  .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.4rem}
+  .sc2{background:var(--s1);border:0.5px solid var(--bd);border-radius:10px;padding:1rem}
+  .sc2 .lbl{font-size:11px;color:var(--m);margin-bottom:5px}
+  .sc2 .val{font-family:var(--fh);font-size:26px}.sc2 .sub{font-size:10px;color:var(--m);margin-top:2px}
+  .vy{color:var(--a)}.vg{color:var(--g)}.vb{color:var(--b)}
+  .tw{background:var(--s1);border:0.5px solid var(--bd);border-radius:16px;overflow:hidden}
+  .th2{padding:1rem 1.25rem;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .th2 span{font-size:13px;font-weight:500}
+  .si{padding:7px 11px;font-size:12px;background:var(--s2);border:0.5px solid var(--bd);border-radius:8px;color:var(--t);font-family:var(--fb);outline:none;width:180px}
+  .si:focus{border-color:var(--a)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;padding:10px 1.25rem;font-size:11px;color:var(--m);font-weight:500;border-bottom:0.5px solid var(--bd);letter-spacing:0.3px}
+  tbody tr{border-bottom:0.5px solid var(--bd);transition:background .15s;cursor:pointer}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:var(--s2)}
+  tbody td{padding:11px 1.25rem;vertical-align:middle}
+  .po{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;align-items:flex-end;justify-content:center;padding:1rem}
+  .po.open{display:flex}
+  .pn{width:100%;max-width:600px;background:var(--s1);border:0.5px solid var(--bd2);border-radius:16px;padding:1.5rem;max-height:88vh;overflow-y:auto}
+  .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+  .ph h3{font-family:var(--fh);font-size:16px}
+  .bcl{width:30px;height:30px;border-radius:8px;background:var(--s2);border:none;color:var(--m);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .bcl:hover{background:var(--r);color:#fff}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fgf{grid-template-columns:1fr}
+  .ff{display:flex;flex-direction:column;gap:5px}
+  .ff label{font-size:11px;color:var(--m)}
+  .ff input,.ff select,.ff textarea{padding:9px 12px;font-size:13px;background:var(--s2);border:0.5px solid var(--bd);border-radius:9px;color:var(--t);font-family:var(--fb);outline:none;transition:border .2s}
+  .ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--a)}
+  .ff textarea{resize:vertical;min-height:80px}
+  .fa{display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem;padding-top:1rem;border-top:0.5px solid var(--bd)}
+  .bcn{padding:9px 18px;background:transparent;border:0.5px solid var(--bd2);border-radius:8px;color:var(--m);font-size:13px;cursor:pointer;font-family:var(--fb);transition:all .2s}
+  .bcn:hover{border-color:var(--m);color:var(--t)}
+  .ch{background:var(--s1);border:0.5px solid var(--bd);border-radius:16px;padding:1.25rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  .ci{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#2a2000,#1a1500);border:0.5px solid #4a3800;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+  .ci2{flex:1}.ci2 h2{font-family:var(--fh);font-size:20px;letter-spacing:-.5px}
+  .ci2 p{font-size:11px;color:var(--m);margin-top:2px}
+  .cm{display:flex;gap:16px;flex-wrap:wrap;margin-top:7px}
+  .cm-i{font-size:12px}.cm-i span{color:var(--m);margin-right:3px}
+  .ec{background:var(--s1);border:0.5px solid var(--bd);border-radius:10px;padding:1rem 1.25rem;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;transition:border-color .15s}
+  .ec:hover{border-color:var(--bd2)}
+  .ei{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:1px;background:var(--s2);border:0.5px solid var(--bd)}
+  .eb{flex:1}.et{font-size:14px;font-weight:500;margin-bottom:3px}
+  .em{font-size:11px;color:var(--m);display:flex;gap:12px;flex-wrap:wrap}
+  .ep{font-family:var(--fh);font-size:15px;color:var(--a);white-space:nowrap}
+  .tabs{display:flex;gap:4px;margin-bottom:1.2rem;flex-wrap:wrap}
+  .tab-b{padding:8px 14px;font-size:12px;font-weight:500;background:transparent;border:0.5px solid var(--bd);border-radius:8px;color:var(--m);cursor:pointer;font-family:var(--fb);transition:all .2s}
+  .tab-b.on{background:var(--s2);border-color:var(--bd2);color:var(--t)}
+  .nv{display:flex;gap:4px;padding:.75rem 1.5rem;border-bottom:0.5px solid var(--bd);background:var(--s1);flex-wrap:wrap}
+  .nv-b{padding:7px 14px;font-size:12px;font-weight:500;background:transparent;border:0.5px solid transparent;border-radius:8px;color:var(--m);cursor:pointer;font-family:var(--fb);transition:all .2s}
+  .nv-b.on{background:var(--s2);border-color:var(--bd);color:var(--t)}
+  .es{text-align:center;padding:3rem 1rem;color:var(--m);font-size:13px}
+  .es .ei2{font-size:36px;margin-bottom:8px}
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--s2);border:0.5px solid var(--bd2);border-radius:10px;padding:12px 18px;font-size:13px;z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .toast.show{display:block}
+  @media(max-width:600px){.fg{grid-template-columns:1fr}.mc{padding:1rem}.tb{padding:0 1rem}.nv{padding:.6rem 1rem}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="ls" class="sc active">
+  <div class="lb">
+    <div class="lh">
+      <div class="logo-wsf">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+          <polygon points="28,3 50,13 50,43 28,53 6,43 6,13" fill="#1a1200" stroke="#c9a82e" stroke-width="2"/>
+          <circle cx="28" cy="21" r="8" stroke="#c9a82e" stroke-width="1.8" fill="none"/>
+          <line x1="20" y1="29" x2="36" y2="29" stroke="#c9a82e" stroke-width="1.8"/>
+          <rect x="13" y="33" width="30" height="10" rx="1.5" fill="#1a1200" stroke="#c9a82e" stroke-width="1.2"/>
+          <text x="28" y="41" text-anchor="middle" fill="#c9a82e" font-size="6.5" font-family="Arial,sans-serif" font-weight="bold">WSF</text>
+          <line x1="33" y1="17" x2="38" y2="12" stroke="#c9a82e" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="38" cy="12" r="2.5" fill="#c9a82e"/>
+        </svg>
+      </div>
+      <div class="lh-t">
+        <h1>WSF-Mécanique</h1>
+        <p>Mécanique Auto · Climatisation · Pneumatique</p>
+      </div>
+    </div>
+    <div class="rt">
+      <button class="on" onclick="selectRole('client')">Espace client</button>
+      <button onclick="selectRole('admin')">Administration</button>
+    </div>
+    <div class="fi"><label>Identifiant</label><input type="text" id="lu" placeholder="Entrez votre identifiant"/></div>
+    <div class="fi"><label>Mot de passe</label><input type="password" id="lp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <p class="hint" id="lhint">Client demo : <b>client1 / client1</b> — <b>client2 / client2</b></p>
+    <button class="bp" onclick="doLogin()">Se connecter</button>
+    <p class="err" id="lerr"></p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="as" class="sc">
+  <div class="tb">
+    <div class="tbl">
+      <div class="tl-logo">
+        <svg viewBox="0 0 56 56" fill="none" width="36" height="36">
+          <polygon points="28,3 50,13 50,43 28,53 6,43 6,13" fill="#1a1200" stroke="#c9a82e" stroke-width="2"/>
+          <circle cx="28" cy="21" r="8" stroke="#c9a82e" stroke-width="1.8" fill="none"/>
+          <line x1="20" y1="29" x2="36" y2="29" stroke="#c9a82e" stroke-width="1.8"/>
+          <rect x="13" y="33" width="30" height="10" rx="1.5" fill="#1a1200" stroke="#c9a82e" stroke-width="1.2"/>
+          <text x="28" y="41" text-anchor="middle" fill="#c9a82e" font-size="6.5" font-family="Arial,sans-serif" font-weight="bold">WSF</text>
+        </svg>
+      </div>
+      <span class="tb-brand">WSF-Mécanique</span>
+      <span class="badge ba">Admin</span>
+    </div>
+    <div class="tbr">
+      <span style="font-size:12px;color:var(--m)" id="aname"></span>
+      <button class="blg" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="nv" id="anv"></div>
+  <div class="mc" id="ac"></div>
+</div>
+
+<!-- CLIENT -->
+<div id="cs" class="sc">
+  <div class="tb">
+    <div class="tbl">
+      <div class="tl-logo">
+        <svg viewBox="0 0 56 56" fill="none" width="36" height="36">
+          <polygon points="28,3 50,13 50,43 28,53 6,43 6,13" fill="#1a1200" stroke="#c9a82e" stroke-width="2"/>
+          <circle cx="28" cy="21" r="8" stroke="#c9a82e" stroke-width="1.8" fill="none"/>
+          <line x1="20" y1="29" x2="36" y2="29" stroke="#c9a82e" stroke-width="1.8"/>
+          <rect x="13" y="33" width="30" height="10" rx="1.5" fill="#1a1200" stroke="#c9a82e" stroke-width="1.2"/>
+          <text x="28" y="41" text-anchor="middle" fill="#c9a82e" font-size="6.5" font-family="Arial,sans-serif" font-weight="bold">WSF</text>
+        </svg>
+      </div>
+      <span class="tb-brand">WSF-Mécanique</span>
+      <span class="badge bc">Client</span>
+    </div>
+    <div class="tbr">
+      <span style="font-size:12px;color:var(--m)" id="cname"></span>
+      <button class="blg" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="mc" id="cc"></div>
+</div>
+
+<!-- PANEL -->
+<div class="po" id="po">
+  <div class="pn">
+    <div class="ph"><h3 id="ptitle"></h3><button class="bcl" onclick="closePanel()">✕</button></div>
+    <div id="pbody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ========= BASE DE DONNÉES LOCALE =========
+// Remplacez ces données par vos vrais clients et véhicules
+const DB = {
+  users: [
+    { id:'admin',   pass:'admin123', role:'admin',  name:'Garagiste WSF' },
+    { id:'client1', pass:'client1',  role:'client', name:'Jean Dupont',   cid:'C1' },
+    { id:'client2', pass:'client2',  role:'client', name:'Marie Martin',  cid:'C2' },
+  ],
+  clients: [
+    { id:'C1', name:'Jean Dupont',   email:'jean.dupont@email.fr',   tel:'06 11 22 33 44' },
+    { id:'C2', name:'Marie Martin',  email:'marie.martin@email.fr',  tel:'07 55 66 77 88' },
+    { id:'C3', name:'Paul Leclerc',  email:'paul.leclerc@email.fr',  tel:'06 99 00 11 22' },
+  ],
+  vehicles: [
+    { id:'V1', cid:'C1', marque:'Renault',  modele:'Clio 5',      immat:'AB-123-CD', annee:2020, km:42000, couleur:'Blanc Nacré'  },
+    { id:'V2', cid:'C1', marque:'Peugeot',  modele:'308 SW',      immat:'EF-456-GH', annee:2018, km:87000, couleur:'Gris Shark'   },
+    { id:'V3', cid:'C2', marque:'Citroën',  modele:'C3 Aircross', immat:'IJ-789-KL', annee:2021, km:31000, couleur:'Rouge Elixir' },
+    { id:'V4', cid:'C3', marque:'VW',       modele:'Golf 8',      immat:'MN-012-OP', annee:2022, km:18000, couleur:'Bleu Atlantis'},
+  ],
+  entries: [
+    { id:'E1', vid:'V1', date:'2024-11-15', type:'Vidange',      detail:'Huile 5W40 + filtre huile',           km:40000, prix:89,  tech:'Pierre' },
+    { id:'E2', vid:'V1', date:'2024-08-03', type:'Freins',       detail:'Plaquettes avant + disques',          km:38000, prix:320, tech:'Marc'   },
+    { id:'E3', vid:'V1', date:'2025-01-20', type:'CT',           detail:'Contrôle technique favorable',        km:41500, prix:79,  tech:'—'      },
+    { id:'E4', vid:'V2', date:'2024-09-10', type:'Vidange',      detail:'Huile 5W30 + contrôle niveaux',       km:85000, prix:95,  tech:'Pierre' },
+    { id:'E5', vid:'V2', date:'2024-12-01', type:'Distribution', detail:'Courroie + galets + pompe eau',       km:86000, prix:680, tech:'Marc'   },
+    { id:'E6', vid:'V3', date:'2025-02-14', type:'Pneus',        detail:'4 pneus Michelin 195/65 R15',         km:30000, prix:420, tech:'Pierre' },
+    { id:'E7', vid:'V4', date:'2025-03-01', type:'Vidange',      detail:'Huile 0W30 longlife + filtre à air',  km:17500, prix:110, tech:'Marc'   },
+  ]
+};
+
+let cu = null, role = 'client', atab = 'dash';
+const fd = d => { const [y,m,j] = d.split('-'); return `${j}/${m}/${y}`; };
+const toast = m => { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400); };
+const ICONS = { 'Vidange':'🛢️','Freins':'🔴','Distribution':'⚙️','Pneus':'🔵','CT':'📋','Climatisation':'❄️','Batterie':'🔋','Carrosserie':'🔨','Autre':'🔧' };
+
+function selectRole(r) {
+  role = r;
+  document.querySelectorAll('.rt button').forEach((b, i) => b.classList.toggle('on', (i===0&&r==='client')||(i===1&&r==='admin')));
+  document.getElementById('lhint').innerHTML = r === 'admin'
+    ? 'Admin : <b>admin / admin123</b>'
+    : 'Client demo : <b>client1 / client1</b> — <b>client2 / client2</b>';
+  document.getElementById('lerr').textContent = '';
+}
+
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  const user = DB.users.find(x => x.id === u && x.pass === p);
+  if (!user) { document.getElementById('lerr').textContent = 'Identifiant ou mot de passe incorrect'; return; }
+  if (user.role !== role) { document.getElementById('lerr').textContent = `Ce compte n'est pas un compte ${role==='admin'?'administrateur':'client'}`; return; }
+  cu = user;
+  document.getElementById('lerr').textContent = '';
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('active'));
+  if (role === 'admin') {
+    document.getElementById('as').classList.add('active');
+    document.getElementById('aname').textContent = user.name;
+    adminTab('dash');
+  } else {
+    document.getElementById('cs').classList.add('active');
+    document.getElementById('cname').textContent = user.name;
+    renderClient();
+  }
+}
+
+function logout() {
+  cu = null;
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('active'));
+  document.getElementById('ls').classList.add('active');
+  selectRole('client');
+}
+
+// ======= ADMIN =======
+function adminTab(t) {
+  atab = t;
+  const tabs   = ['dash','vehicles','clients','entries'];
+  const labels = ['Tableau de bord','Véhicules','Clients','Interventions'];
+  document.getElementById('anv').innerHTML = tabs.map((x,i) =>
+    `<button class="nv-b ${x===t?'on':''}" onclick="adminTab('${x}')">${labels[i]}</button>`).join('');
+  const c = document.getElementById('ac');
+  if (t==='dash')     c.innerHTML = renderDash();
+  if (t==='vehicles') c.innerHTML = renderVehicles();
+  if (t==='clients')  c.innerHTML = renderClients();
+  if (t==='entries')  c.innerHTML = renderEntries();
+}
+
+function renderDash() {
+  const ca = DB.entries.reduce((s,e) => s+e.prix, 0);
+  const rows = [...DB.entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0,6).map(e => {
+    const v = DB.vehicles.find(x => x.id===e.vid);
+    const cl = DB.clients.find(x => x.id===v?.cid);
+    return `<tr><td>${fd(e.date)}</td><td><span style="font-weight:500">${v?.marque} ${v?.modele}</span><br><span style="color:var(--m);font-size:11px">${cl?.name}</span></td><td>${ICONS[e.type]||'🔧'} ${e.type}</td><td>${e.km.toLocaleString('fr-FR')} km</td><td style="color:var(--a);font-family:var(--fh)">${e.prix} €</td></tr>`;
+  }).join('');
+  return `
+    <div class="sh" style="margin-bottom:1.4rem"><div><h2>Tableau de bord</h2><p style="color:var(--m);font-size:12px;margin-top:3px">Vue générale de l'atelier</p></div></div>
+    <div class="sg">
+      <div class="sc2"><div class="lbl">Clients</div><div class="val vy">${DB.clients.length}</div><div class="sub">enregistrés</div></div>
+      <div class="sc2"><div class="lbl">Véhicules</div><div class="val vb">${DB.vehicles.length}</div><div class="sub">en suivi</div></div>
+      <div class="sc2"><div class="lbl">Interventions</div><div class="val vg">${DB.entries.length}</div><div class="sub">au total</div></div>
+      <div class="sc2"><div class="lbl">Chiffre d'affaires</div><div class="val vy" style="font-size:18px">${ca.toLocaleString('fr-FR')} €</div><div class="sub">cumulé</div></div>
+    </div>
+    <div class="tw"><div class="th2"><span>Dernières interventions</span></div>
+    <table><thead><tr><th>Date</th><th>Véhicule</th><th>Type</th><th>Km</th><th>Prix</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function renderVehicles() {
+  const rows = DB.vehicles.map(v => {
+    const cl = DB.clients.find(x => x.id===v.cid);
+    const nb = DB.entries.filter(e => e.vid===v.id).length;
+    return `<tr><td><span class="badge bbl">${v.immat}</span></td>
+      <td><span style="font-weight:500">${v.marque} ${v.modele}</span><br><span style="color:var(--m);font-size:11px">${v.couleur}</span></td>
+      <td>${cl?.name||'—'}</td><td>${v.annee}</td>
+      <td>${v.km.toLocaleString('fr-FR')} km</td>
+      <td style="color:var(--b)">${nb} entrée${nb>1?'s':''}</td>
+      <td><button class="ba2 bs" onclick="editV('${v.id}');event.stopPropagation()">Modifier</button></td></tr>`;
+  }).join('');
+  return `<div class="sh"><div><h2>Véhicules</h2><p style="color:var(--m);font-size:12px;margin-top:2px">${DB.vehicles.length} enregistrés</p></div>
+    <button class="ba2" onclick="addV()">+ Ajouter</button></div>
+    <div class="tw"><div class="th2"><span>Liste des véhicules</span>
+    <input class="si" placeholder="Rechercher..." oninput="filt(this,'vt')"/></div>
+    <table id="vt"><thead><tr><th>Immat</th><th>Véhicule</th><th>Client</th><th>Année</th><th>Km</th><th>Interventions</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function renderClients() {
+  const rows = DB.clients.map(c => {
+    const vs = DB.vehicles.filter(v => v.cid===c.id);
+    return `<tr>
+      <td style="font-weight:500">${c.name}</td>
+      <td style="color:var(--m)">${c.email}</td>
+      <td>${c.tel}</td>
+      <td>${vs.map(v=>`<span class="badge bbl" style="margin-right:3px">${v.immat}</span>`).join('')||'—'}</td>
+      <td><button class="ba2 bs" onclick="editC('${c.id}');event.stopPropagation()">Modifier</button></td></tr>`;
+  }).join('');
+  return `<div class="sh"><div><h2>Clients</h2><p style="color:var(--m);font-size:12px;margin-top:2px">${DB.clients.length} enregistrés</p></div>
+    <button class="ba2" onclick="addC()">+ Nouveau client</button></div>
+    <div class="tw"><div class="th2"><span>Liste des clients</span>
+    <input class="si" placeholder="Rechercher..." oninput="filt(this,'ct')"/></div>
+    <table id="ct"><thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Véhicules</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function renderEntries() {
+  const rows = [...DB.entries].sort((a,b) => b.date.localeCompare(a.date)).map(e => {
+    const v = DB.vehicles.find(x => x.id===e.vid);
+    const cl = DB.clients.find(x => x.id===v?.cid);
+    return `<tr>
+      <td>${fd(e.date)}</td>
+      <td><span style="font-weight:500">${v?.marque} ${v?.modele}</span><br><span class="badge bbl" style="font-size:10px">${v?.immat}</span></td>
+      <td>${cl?.name||'—'}</td>
+      <td>${ICONS[e.type]||'🔧'} ${e.type}</td>
+      <td>${e.km.toLocaleString('fr-FR')} km</td>
+      <td style="color:var(--m);font-size:12px">${e.tech}</td>
+      <td style="color:var(--a);font-family:var(--fh)">${e.prix} €</td>
+      <td><button class="ba2 bs" onclick="editE('${e.id}');event.stopPropagation()">Modifier</button></td></tr>`;
+  }).join('');
+  return `<div class="sh"><div><h2>Interventions</h2><p style="color:var(--m);font-size:12px;margin-top:2px">${DB.entries.length} enregistrées</p></div>
+    <button class="ba2" onclick="addE()">+ Nouvelle</button></div>
+    <div class="tw"><div class="th2"><span>Toutes les interventions</span>
+    <input class="si" placeholder="Rechercher..." oninput="filt(this,'et')"/></div>
+    <table id="et"><thead><tr><th>Date</th><th>Véhicule</th><th>Client</th><th>Type</th><th>Km</th><th>Technicien</th><th>Prix</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function filt(inp, tid) {
+  const q = inp.value.toLowerCase();
+  document.querySelectorAll(`#${tid} tbody tr`).forEach(r => r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none');
+}
+
+// ======= FORMULAIRES ADMIN =======
+function addV() {
+  const co = DB.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('ptitle').textContent = 'Ajouter un véhicule';
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Propriétaire</label><select id="fv-c">${co}</select></div>
+      <div class="ff"><label>Immatriculation</label><input id="fv-i" placeholder="AB-123-CD"/></div>
+      <div class="ff"><label>Marque</label><input id="fv-m" placeholder="Renault"/></div>
+      <div class="ff"><label>Modèle</label><input id="fv-mo" placeholder="Clio 5"/></div>
+      <div class="ff"><label>Année</label><input id="fv-a" type="number" placeholder="2022"/></div>
+      <div class="ff"><label>Kilométrage</label><input id="fv-k" type="number" placeholder="15000"/></div>
+      <div class="ff"><label>Couleur</label><input id="fv-co" placeholder="Blanc Nacré"/></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="closePanel()">Annuler</button><button class="ba2" onclick="saveV(null)">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function editV(id) {
+  const v = DB.vehicles.find(x => x.id===id);
+  const co = DB.clients.map(c=>`<option value="${c.id}" ${c.id===v.cid?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('ptitle').textContent = 'Modifier le véhicule';
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Propriétaire</label><select id="fv-c">${co}</select></div>
+      <div class="ff"><label>Immatriculation</label><input id="fv-i" value="${v.immat}"/></div>
+      <div class="ff"><label>Marque</label><input id="fv-m" value="${v.marque}"/></div>
+      <div class="ff"><label>Modèle</label><input id="fv-mo" value="${v.modele}"/></div>
+      <div class="ff"><label>Année</label><input id="fv-a" type="number" value="${v.annee}"/></div>
+      <div class="ff"><label>Kilométrage</label><input id="fv-k" type="number" value="${v.km}"/></div>
+      <div class="ff"><label>Couleur</label><input id="fv-co" value="${v.couleur}"/></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="delItem('vehicle','${id}')">🗑 Supprimer</button><button class="ba2" onclick="saveV('${id}')">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function saveV(id) {
+  const d = {
+    cid: document.getElementById('fv-c').value,
+    immat: document.getElementById('fv-i').value.trim(),
+    marque: document.getElementById('fv-m').value.trim(),
+    modele: document.getElementById('fv-mo').value.trim(),
+    annee: parseInt(document.getElementById('fv-a').value)||2020,
+    km: parseInt(document.getElementById('fv-k').value)||0,
+    couleur: document.getElementById('fv-co').value.trim()
+  };
+  if (!d.immat||!d.marque||!d.modele) { toast('Champs obligatoires manquants'); return; }
+  if (id) Object.assign(DB.vehicles.find(x=>x.id===id), d);
+  else DB.vehicles.push({ id:'V'+Date.now(), ...d });
+  closePanel(); adminTab('vehicles'); toast('Véhicule enregistré ✓');
+}
+
+function addC() {
+  document.getElementById('ptitle').textContent = 'Nouveau client';
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Nom complet</label><input id="fc-n" placeholder="Jean Dupont"/></div>
+      <div class="ff"><label>Email</label><input id="fc-e" placeholder="jean@email.fr"/></div>
+      <div class="ff" style="grid-column:span 2"><label>Téléphone</label><input id="fc-t" placeholder="06 xx xx xx xx"/></div>
+      <div class="ff"><label>Identifiant (connexion)</label><input id="fc-u" placeholder="jean.dupont"/></div>
+      <div class="ff"><label>Mot de passe</label><input id="fc-p" placeholder="motdepasse"/></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="closePanel()">Annuler</button><button class="ba2" onclick="saveC(null)">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function editC(id) {
+  const c = DB.clients.find(x => x.id===id);
+  const u = DB.users.find(x => x.cid===id);
+  document.getElementById('ptitle').textContent = 'Modifier le client';
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Nom complet</label><input id="fc-n" value="${c.name}"/></div>
+      <div class="ff"><label>Email</label><input id="fc-e" value="${c.email}"/></div>
+      <div class="ff" style="grid-column:span 2"><label>Téléphone</label><input id="fc-t" value="${c.tel}"/></div>
+      <div class="ff"><label>Identifiant</label><input id="fc-u" value="${u?.id||''}"/></div>
+      <div class="ff"><label>Mot de passe</label><input id="fc-p" value="${u?.pass||''}"/></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="delItem('client','${id}')">🗑 Supprimer</button><button class="ba2" onclick="saveC('${id}')">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function saveC(id) {
+  const d = {
+    name: document.getElementById('fc-n').value.trim(),
+    email: document.getElementById('fc-e').value.trim(),
+    tel: document.getElementById('fc-t').value.trim()
+  };
+  const uid = document.getElementById('fc-u').value.trim();
+  const upwd = document.getElementById('fc-p').value.trim();
+  if (!d.name) { toast('Le nom est obligatoire'); return; }
+  if (id) {
+    Object.assign(DB.clients.find(x=>x.id===id), d);
+    const u = DB.users.find(x => x.cid===id);
+    if (u && uid) { u.id = uid; u.pass = upwd || u.pass; }
+  } else {
+    const newId = 'C'+Date.now();
+    DB.clients.push({ id: newId, ...d });
+    if (uid) DB.users.push({ id: uid, pass: upwd||'changeme', role:'client', name: d.name, cid: newId });
+  }
+  closePanel(); adminTab('clients'); toast('Client enregistré ✓');
+}
+
+function addE() {
+  const vo = DB.vehicles.map(v=>`<option value="${v.id}">${v.marque} ${v.modele} — ${v.immat}</option>`).join('');
+  const types = ['Vidange','Freins','Distribution','Pneus','CT','Climatisation','Batterie','Carrosserie','Autre'];
+  document.getElementById('ptitle').textContent = 'Nouvelle intervention';
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Véhicule</label><select id="fe-v">${vo}</select></div>
+      <div class="ff"><label>Type</label><select id="fe-t">${types.map(t=>`<option>${t}</option>`).join('')}</select></div>
+      <div class="ff"><label>Date</label><input id="fe-d" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
+      <div class="ff"><label>Kilométrage</label><input id="fe-k" type="number" placeholder="45000"/></div>
+      <div class="ff"><label>Prix (€)</label><input id="fe-p" type="number" placeholder="150"/></div>
+      <div class="ff"><label>Technicien</label><input id="fe-te" placeholder="Pierre"/></div>
+    </div>
+    <div class="fg fgf" style="margin-top:8px">
+      <div class="ff"><label>Détail / notes</label><textarea id="fe-de" placeholder="Description des travaux effectués..."></textarea></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="closePanel()">Annuler</button><button class="ba2" onclick="saveE(null)">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function editE(id) {
+  const e = DB.entries.find(x => x.id===id);
+  const vo = DB.vehicles.map(v=>`<option value="${v.id}" ${v.id===e.vid?'selected':''}>${v.marque} ${v.modele} — ${v.immat}</option>`).join('');
+  const types = ['Vidange','Freins','Distribution','Pneus','CT','Climatisation','Batterie','Carrosserie','Autre'];
+  document.getElementById('ptitle').textContent = "Modifier l'intervention";
+  document.getElementById('pbody').innerHTML = `
+    <div class="fg">
+      <div class="ff"><label>Véhicule</label><select id="fe-v">${vo}</select></div>
+      <div class="ff"><label>Type</label><select id="fe-t">${types.map(t=>`<option ${t===e.type?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="ff"><label>Date</label><input id="fe-d" type="date" value="${e.date}"/></div>
+      <div class="ff"><label>Kilométrage</label><input id="fe-k" type="number" value="${e.km}"/></div>
+      <div class="ff"><label>Prix (€)</label><input id="fe-p" type="number" value="${e.prix}"/></div>
+      <div class="ff"><label>Technicien</label><input id="fe-te" value="${e.tech}"/></div>
+    </div>
+    <div class="fg fgf" style="margin-top:8px">
+      <div class="ff"><label>Détail / notes</label><textarea id="fe-de">${e.detail}</textarea></div>
+    </div>
+    <div class="fa"><button class="bcn" onclick="delItem('entry','${id}')">🗑 Supprimer</button><button class="ba2" onclick="saveE('${id}')">Enregistrer</button></div>`;
+  openPanel();
+}
+
+function saveE(id) {
+  const d = {
+    vid: document.getElementById('fe-v').value,
+    type: document.getElementById('fe-t').value,
+    date: document.getElementById('fe-d').value,
+    km: parseInt(document.getElementById('fe-k').value)||0,
+    prix: parseInt(document.getElementById('fe-p').value)||0,
+    tech: document.getElementById('fe-te').value.trim(),
+    detail: document.getElementById('fe-de').value.trim()
+  };
+  if (!d.date) { toast('La date est obligatoire'); return; }
+  if (id) Object.assign(DB.entries.find(x=>x.id===id), d);
+  else DB.entries.push({ id:'E'+Date.now(), ...d });
+  closePanel(); adminTab('entries'); toast('Intervention enregistrée ✓');
+}
+
+function delItem(type, id) {
+  if (type==='vehicle') { DB.vehicles = DB.vehicles.filter(x=>x.id!==id); closePanel(); adminTab('vehicles'); }
+  if (type==='client')  { DB.clients  = DB.clients.filter(x=>x.id!==id);  closePanel(); adminTab('clients');  }
+  if (type==='entry')   { DB.entries  = DB.entries.filter(x=>x.id!==id);  closePanel(); adminTab('entries');  }
+  toast('Supprimé');
+}
+
+function openPanel()  { document.getElementById('po').classList.add('open'); }
+function closePanel() { document.getElementById('po').classList.remove('open'); }
+
+// ======= CLIENT =======
+function renderClient() {
+  const cl = DB.clients.find(x => x.id===cu.cid);
+  const vehs = DB.vehicles.filter(v => v.cid===cu.cid);
+  const c = document.getElementById('cc');
+  let html = `<div class="sh"><div><h2>Bonjour, ${cl?.name?.split(' ')[0]} 👋</h2><p style="color:var(--m);font-size:12px;margin-top:3px">Votre carnet d'entretien numérique — WSF-Mécanique</p></div></div>`;
+  if (!vehs.length) { html += `<div class="es"><div class="ei2">🚗</div><p>Aucun véhicule associé à votre compte.<br>Contactez WSF-Mécanique.</p></div>`; c.innerHTML = html; return; }
+  html += `<div class="tabs" id="ctabs">${vehs.map((v,i)=>`<button class="tab-b ${i===0?'on':''}" onclick="selVeh('${v.id}',this)">${v.marque} ${v.modele}</button>`).join('')}</div><div id="cvd"></div>`;
+  c.innerHTML = html;
+  renderVeh(vehs[0].id);
+}
+
+function selVeh(vid, btn) {
+  document.querySelectorAll('.tab-b').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  renderVeh(vid);
+}
+
+function renderVeh(vid) {
+  const v = DB.vehicles.find(x => x.id===vid);
+  const entries = [...DB.entries.filter(e => e.vid===vid)].sort((a,b) => b.date.localeCompare(a.date));
+  const tot = entries.reduce((s,e) => s+e.prix, 0);
+  let html = `
+    <div class="ch">
+      <div class="ci">🚗</div>
+      <div class="ci2">
+        <h2>${v.marque} ${v.modele}</h2>
+        <p>${v.couleur}</p>
+        <div class="cm">
+          <div class="cm-i"><span>Immat.</span>${v.immat}</div>
+          <div class="cm-i"><span>Année</span>${v.annee}</div>
+          <div class="cm-i"><span>Km</span>${v.km.toLocaleString('fr-FR')} km</div>
+        </div>
+      </div>
+    </div>
+    <div class="sg">
+      <div class="sc2"><div class="lbl">Interventions</div><div class="val vb">${entries.length}</div></div>
+      <div class="sc2"><div class="lbl">Dépenses totales</div><div class="val vy" style="font-size:18px">${tot.toLocaleString('fr-FR')} €</div></div>
+      <div class="sc2"><div class="lbl">Dernière visite</div><div class="val" style="font-size:14px;margin-top:4px">${entries.length ? fd(entries[0].date) : '—'}</div></div>
+    </div>`;
+  if (!entries.length) {
+    html += `<div class="es"><div class="ei2">📋</div><p>Aucune intervention enregistrée pour ce véhicule.</p></div>`;
+  } else {
+    html += `<div class="sh" style="margin-bottom:.9rem"><div><h2 style="font-size:15px">Historique des interventions</h2></div></div>`;
+    entries.forEach(e => {
+      html += `<div class="ec">
+        <div class="ei">${ICONS[e.type]||'🔧'}</div>
+        <div class="eb">
+          <div class="et">${e.type}</div>
+          <div style="font-size:12px;color:var(--m);margin-bottom:4px">${e.detail}</div>
+          <div class="em">
+            <span>📅 ${fd(e.date)}</span>
+            <span>📍 ${e.km.toLocaleString('fr-FR')} km</span>
+            ${e.tech&&e.tech!=='—'?`<span>👨‍🔧 ${e.tech}</span>`:''}
+          </div>
+        </div>
+        <div class="ep">${e.prix} €</div>
+      </div>`;
+    });
+  }
+  document.getElementById('cvd').innerHTML = html;
+}
+</script>
+</body>
+</html>
